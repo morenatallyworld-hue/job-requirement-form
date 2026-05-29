@@ -602,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </table>
                             
                             <p style="margin-top: 14px; font-size: 0.85rem; color: #666; font-style: italic; line-height: 1.45; border-top: 1px dashed #ccc; padding-top: 8px;">
-                                👉 Aapka placement profile database mein safely record ho gaya hai. <strong>Kripya is screen ka screenshot zaroor le lein.</strong> Tally World placement cell ki taraf se aapse jald sampark kiya jayega.
+                                Your registration has been completed successfully.</strong> The Tally World Placement team will get in touch with you soon.
                             </p>
                         </div>
                     `;
@@ -638,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = `<span>Submit Application</span> <i class="fas fa-paper-plane plane-icon"></i>`;
                 } else {
-                    showCustomPopup("Verification Failed", data.error || "Details verification fail ho gaya hai.", true);
+                    showCustomPopup("Verification Failed", data.error || "verification failed.", true);
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = `<span>Submit Application</span> <i class="fas fa-paper-plane plane-icon"></i>`;
                 }
