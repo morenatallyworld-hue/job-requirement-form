@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tally World - Find Student ID</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- Premium, Modern & Mobile-First CSS Styling --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* मोबाइल टैप फ्लैश हटाने के लिए */
+        }
+
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS सफारी कम्पैटिबिलिटी */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* पॉपअप खुलने पर बैकग्राउंड हाइड और ब्लर इफेक्ट */
+        .main-wrapper.form-hidden {
+            filter: blur(10px);
+            opacity: 0;
+            transform: scale(0.92);
+            pointer-events: none;
+        }
+
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .shape-1 {
+            width: 250px;
+            height: 250px;
+            background: #2b3a8d;
+            top: -5%;
+            left: -5%;
+        }
+
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            background: #2e8d47;
+            bottom: -5%;
+            right: -5%;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+            border: 1px solid rgba(255,255,255,0.7);
+            width: 100%;
+            max-width: 440px;
+            padding: 30px 24px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-title h1 {
+            color: #2b3a8d;
+            font-size: 24px;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .form-title-badge {
+            background: linear-gradient(135deg, #2b3a8d, #1e2555);
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 16px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(43, 58, 141, 0.15);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 12px;
+            outline: none;
+            font-size: 15px;
+            color: #1e293b;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+        }
+
+        .input-group input:focus {
+            border-color: #2b3a8d;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(43, 58, 141, 0.05);
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+            padding: 0 4px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:not(:placeholder-shown) ~ label {
+            top: 0;
+            font-size: 11px;
+            color: #2b3a8d;
+            background: #ffffff;
+            font-weight: 600;
+        }
+
+        .required {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
+        .submit-btn-modern {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2b3a8d, #1a2456);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 14px rgba(43, 58, 141, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .submit-btn-modern:active {
+            transform: scale(0.98);
+        }
+
+        /* --- Mobile Responsive Popup (Modal) System --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            padding: 35px 20px 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            transform: scale(0.85) translateY(15px);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+
+        /* बड़ा और मोबाइल-फ्रेंडली क्लोज बटन */
+        .modal-close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 5px; /* आसान टच के लिए */
+        }
+        .modal-close-btn:hover { color: #ef4444; }
+
+        .modal-loader {
+            color: #2b3a8d;
+            padding: 15px 0;
+        }
+        .modal-loader p {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        /* सक्सेस आईडी कार्ड मोबाइल व्यू */
+        .id-card-success-view h2 {
+            color: #2e8d47;
+            font-size: 18px;
+            margin-bottom: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .id-display-container {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 2px dashed #2e8d47;
+            padding: 20px 15px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+        .id-display-container span {
+            display: block;
+            font-size: 12px;
+            color: #15803d;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .id-display-container strong {
+            font-size: 28px;
+            color: #166534;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 1.5px;
+            display: inline-block;
+            word-break: break-all; /* अगर ID लंबी हो तो मोबाइल स्क्रीन से बाहर न जाए */
+        }
+
+        /* एरर और नो रिकॉर्ड व्यू */
+        .error-view {
+            color: #ef4444;
+            padding: 10px 0;
+        }
+        .error-view p {
+            color: #475569;
+            font-size: 14px;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        .modal-action-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2e8d47, #1b5329);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 14px rgba(46,141,71,0.2);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .back-link:hover { color: #2b3a8d; }
+
+        /* छोटे स्क्रीन के मोबाइलों (जैसे iPhone SE) के लिए विशेष मीडिया क्वेरी */
+        @media (max-width: 360px) {
+            .form-card {
+                padding: 24px 16px;
+            }
+            .logo-title h1 {
+                font-size: 20px;
+            }
+            .id-display-container strong {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- मुख्य फॉर्म एरिया -->
+    <div class="main-wrapper" id="mainWrapper">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+
+        <div class="form-card">
+            <div class="header-section">
+                <div class="logo-title">
+                    <h1>TALLY WORLD</h1>
+                    <p class="subtitle">MORENA (M.P.)</p>
+                </div>
+            </div>
+
+            <div class="form-title-badge">FIND YOUR STUDENT ID</div>
+
+            <form id="idFinderForm">
+                <div class="input-group">
+                    <input type="text" id="find_name" required placeholder=" ">
+                    <label for="find_name">Student Name <span class="required">*</span></label>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="find_father" required placeholder=" ">
+                    <label for="find_father">Father's Name <span class="required">*</span></label>
+                </div>
+
+                <div class="input-group">
+                    <input type="date" id="find_dob" required placeholder=" ">
+                    <label for="find_dob">Date of Birth <span class="required">*</span></label>
+                </div>
+
+                <button type="submit" id="searchBtn" class="submit-btn-modern">
+                    <span>Find ID & Verify</span>
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Main Form</a>
+        </div>
+    </div>
+
+    <!-- मोबाइल-फ्रेंडली पॉपअप मॉडल (Popup Modal) -->
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" onclick="closePopup()"><i class="fas fa-times"></i></button>
+            <div id="modalContent">
+                <!-- जावास्क्रिप्ट डायनामिक रूप से लोडर या रिजल्ट यहाँ लोड करेगा -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const statusModal = document.getElementById('statusModal');
+        const modalContent = document.getElementById('modalContent');
+        const mainWrapper = document.getElementById('mainWrapper');
+
+        // पॉपअप बंद करने का फंक्शन (बैकग्राउंड फॉर्म तुरंत वापस आ जाएगा)
+        function closePopup() {
+            statusModal.classList.remove('active');
+            mainWrapper.classList.remove('form-hidden');
+        }
+
+        document.getElementById('idFinderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('find_name').value.trim();
+            const father = document.getElementById('find_father').value.trim();
+            const dob = document.getElementById('find_dob').value;
+            
+            // 1. बैकग्राउंड फॉर्म को हाइड/ब्लर करना और पॉपअप एक्टिवेट करना
+            mainWrapper.classList.add('form-hidden');
+            statusModal.classList.add('active');
+            
+            // पॉपअप के भीतर सुंदर मोबाइल लोडर
+            modalContent.innerHTML = `
+                <div class="modal-loader">
+                    <i class="fas fa-circle-notch fa-spin fa-2.5x"></i>
+                    <p>Searching Database...</p>
+                </div>
+            `;
+            
+            // आपका लाइव Apps Script Web URL
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbwHL0nCkH8Kz1EwsKI3V9guqgHyZ3bG2PEdvnnaf7SU5Wfaj6V0kEzlBBvv0FIqIEEt/exec";
+            const finalQueryUrl = `${webAppUrl}?name=${encodeURIComponent(name)}&father=${encodeURIComponent(father)}&dob=${encodeURIComponent(dob)}`;
+            
+            fetch(finalQueryUrl, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response status error');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    // केवल 'Student ID' केंद्रित प्रीमियम क्लीन कार्ड डिज़ाइन
+                    modalContent.innerHTML = `
+                        <div class="id-card-success-view">
+                            <i class="fas fa-check-circle fa-3x" style="color: #2e8d47; margin-bottom: 12px;"></i>
+                            <h2>RECORD VERIFIED</h2>
+                            <div class="id-display-container">
+                                <span>Your Student ID</span>
+                                <strong>${data.studentId}</strong>
+                            </div>
+                            <button onclick="window.location.href='index.html'" class="modal-action-btn">
+                                <span>Proceed to Form</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // नो रिकॉर्ड फाउंड मोबाइल व्यू
+                    modalContent.innerHTML = `
+                        <div class="error-view">
+                            <i class="fas fa-exclamation-triangle fa-2.5x"></i>
+                            <h2 style="margin-top:12px; font-size:18px;">No Record Found!</h2>
+                            <p>Please check your spelling and date of birth, or visit Tally World Morena center for verification.</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(err => {
+                // कनेक्शन एरर मोबाइल व्यू
+                modalContent.innerHTML = `
+                    <div class="error-view">
+                        <i class="fas fa-wifi fa-2.5x"></i>
+                        <h2 style="margin-top:12px; font-size:18px;">Connection Error</h2>
+                        <p>Unable to connect to server. Please try again later.</p>
+                    </div>
+                `;
+                console.error("System Error Context:", err);
+            });
+        });
+    </script>
+</body>
+</html>
